@@ -4,7 +4,8 @@ class IndoorLocation(object):
         self.x = int(x)
         self.y = int(y)
         self.floor = int(floor)
-        self.wifi_readings = []
+        # Maybe I should change the nomenclature from readings to samples if it is scientifically more correct
+        self.wifi_samples = []
 
     def __str__(self):
         return "X: "+str(self.x)+" Y: "+str(self.y)+" Floor: "+str(self.floor)
