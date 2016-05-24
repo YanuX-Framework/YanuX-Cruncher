@@ -10,9 +10,9 @@ class JsonLoader(object):
 
     def load(self):
         if os.path.isdir(self.path):
-            for currentdirectory, childdirectories, files in os.walk(self.path):
+            for current_directory, child_directories, files in os.walk(self.path):
                 for name in files:
-                    self.load_file(os.path.join(currentdirectory, name))
+                    self.load_file(os.path.join(current_directory, name))
         else:
             self.load_file(self.path)
 

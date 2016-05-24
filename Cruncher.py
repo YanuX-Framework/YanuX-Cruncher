@@ -7,12 +7,14 @@ json_loader = JsonLoader(path)
 print("# Data Samples")
 print(len(json_loader.json_data))
 
-wifi_log_stats = WifiLogs(json_loader.json_data)
+wifi_logs = WifiLogs(json_loader.json_data)
 print("# Unique MAC Addresses")
 
-print(len(wifi_log_stats.mac_addresses))
+print(len(wifi_logs.mac_addresses))
 
 print("# Locations")
-print(len(wifi_log_stats.locations))
-print(wifi_log_stats.locations)
+print(len(wifi_logs.locations))
+print(wifi_logs.locations)
 
+flat_wifi_readings = wifi_logs.flat_wifi_readings()
+print(flat_wifi_readings)

@@ -1,4 +1,5 @@
 import re
+from collections import OrderedDict
 from model.location import IndoorLocation
 
 
@@ -55,6 +56,8 @@ class WifiReading(object):
 
 
 class WifiLogs(object):
+    _DEFAULT_FLOOR = 2
+
     def __init__(self, json_data):
         self._json_data = json_data
         self.locations = {}
@@ -64,7 +67,9 @@ class WifiLogs(object):
     def _load(self):
         for name, log_file in self._json_data.items():
             parsed_coord = re.findall("\d+", name)
-            coordinates = (parsed_coord[0], parsed_coord[1], 2)
+            # TODO: Find a better way to get the coordinates so that I don't have to follow a specific filename format.
+            # Besides that I really shouldn't hardcode the default floor into the code
+            coordinates = (int(parsed_coord[0]), int(parsed_coord[1]), WifiLogs._DEFAULT_FLOOR)
             if coordinates not in self.locations:
                 self.locations[coordinates] = IndoorLocation(coordinates[0], coordinates[1], coordinates[2])
             location = self.locations[coordinates]
@@ -81,3 +86,23 @@ class WifiLogs(object):
                 for wifi_result in wifi_reading.wifi_results:
                     mac_addresses.add(wifi_result.mac_address)
         return mac_addresses
+
+    def flat_wifi_readings(self):
+        flat_wifi_readings = OrderedDict([
+                                            ("x", []),
+                                            ("y", []),
+                                            ("floor", []),
+                                            ("timestamp", []),
+                                            ("macAddress", []),
+                                            ("signalStrength", [])
+                                        ])
+        for coordinates, location in self.locations.items():
+            for wifi_reading in location.wifi_readings:
+                for wifi_result in wifi_reading.wifi_results:
+                    flat_wifi_readings["x"].append(location.x)
+                    flat_wifi_readings["y"].append(location.y)
+                    flat_wifi_readings["floor"].append(location.floor)
+                    flat_wifi_readings["timestamp"].append(wifi_result.timestamp)
+                    flat_wifi_readings["macAddress"].append(wifi_result.timestamp)
+                    flat_wifi_readings["signalStrength"].append(wifi_result.signal_strength)
+        return flat_wifi_readings

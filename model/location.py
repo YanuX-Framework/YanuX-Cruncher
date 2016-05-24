@@ -1,9 +1,9 @@
 class IndoorLocation(object):
     def __init__(self, x, y, floor):
         # Local Coordinates (e.g., using a reference grid over a building's floor plan)
-        self.x = x
-        self.y = y
-        self.floor = floor
+        self.x = int(x)
+        self.y = int(y)
+        self.floor = int(floor)
         self.wifi_readings = []
 
     def __str__(self):
