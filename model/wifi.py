@@ -43,9 +43,9 @@ class WifiResult(object):
 
 
 class WifiReading(object):
-    def __init__(self, filename, session_id, timestamp, wifi_reading):
+    def __init__(self, filename, sample_id, timestamp, wifi_reading):
         self.filename = filename
-        self.session_id = session_id
+        self.sample_id = sample_id
         self.timestamp = timestamp
         self.current_connection_info = WifiConnectionInfo(wifi_reading["connectionInfo"])
         self.sensor_entries = []
@@ -79,13 +79,13 @@ class WifiLogs(object):
                     location.wifi_samples.append(WifiReading(log_file["name"], entry["id"], timestamp, entry["reading"]))
 
     def wifi_samples(self):
-        wifi_samples = OrderedDict([("filename", []), ("session_id", []), ("x", []), ("y", []), ("floor", []),
+        wifi_samples = OrderedDict([("filename", []), ("sample_id", []), ("x", []), ("y", []), ("floor", []),
                                     ("timestamp", []), ("mac_address", []), ("signal_strength", [])])
         for coordinates, location in self.locations.items():
             for wifi_reading in location.wifi_samples:
                 for wifi_result in wifi_reading.wifi_results:
                     wifi_samples["filename"].append(wifi_reading.filename)
-                    wifi_samples["session_id"].append(wifi_reading.session_id)
+                    wifi_samples["sample_id"].append(wifi_reading.sample_id)
                     wifi_samples["x"].append(location.x)
                     wifi_samples["y"].append(location.y)
                     wifi_samples["floor"].append(location.floor)
