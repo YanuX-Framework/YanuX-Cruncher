@@ -1,6 +1,5 @@
 import re
 import sys
-from collections import OrderedDict
 from model.location import IndoorLocation
 
 
@@ -77,31 +76,40 @@ class WifiLogs(object):
             for session in log_file["sessions"]:
                 timestamp = session["timestamp"]
                 for entry in session["entries"]:
-                    location.wifi_results.append(WifiSample(log_file["name"], entry["id"], timestamp, entry["reading"]))
+                    location.wifi_samples.append(WifiSample(log_file["name"], entry["id"], timestamp, entry["reading"]))
 
-    def shuffle_results(self):
+    def shuffle_samples(self):
         for key, location in self.locations.items():
-            location.shuffle_results()
+            location.shuffle_samples()
 
-    def wifi_samples(self):
-        wifi_results = OrderedDict([("filename", []), ("sample_id", []), ("x", []), ("y", []), ("floor", []),
-                                    ("timestamp", [])])
-
-
-        return wifi_results
+    def wifi_samples(self, start_slice_index=0, end_slice_index=sys.maxsize):
+        wifi_samples = []
+        for coordinates, location in self.locations.items():
+            for wifi_sample in location.wifi_samples[start_slice_index:end_slice_index]:
+                sample = {
+                    "x": location.x,
+                    "y": location.y,
+                    "floor": location.floor,
+                    "filename": wifi_sample.filename,
+                    "sample_id": wifi_sample.sample_id,
+                }
+                for wifi_result in wifi_sample.wifi_results:
+                    sample[wifi_result.mac_address] = wifi_result.signal_strength
+                wifi_samples.append(sample)
+        return wifi_samples
 
     def wifi_results(self, start_slice_index=0, end_slice_index=sys.maxsize):
-        wifi_results = OrderedDict([("filename", []), ("sample_id", []), ("x", []), ("y", []), ("floor", []),
-                                    ("timestamp", []), ("mac_address", []), ("signal_strength", [])])
+        wifi_results = []
         for coordinates, location in self.locations.items():
-            for wifi_reading in location.wifi_results[start_slice_index:end_slice_index]:
-                for wifi_result in wifi_reading.wifi_results:
-                    wifi_results["filename"].append(wifi_reading.filename)
-                    wifi_results["sample_id"].append(wifi_reading.sample_id)
-                    wifi_results["x"].append(location.x)
-                    wifi_results["y"].append(location.y)
-                    wifi_results["floor"].append(location.floor)
-                    wifi_results["timestamp"].append(wifi_result.timestamp)
-                    wifi_results["mac_address"].append(wifi_result.mac_address)
-                    wifi_results["signal_strength"].append(wifi_result.signal_strength)
+            for wifi_sample in location.wifi_samples[start_slice_index:end_slice_index]:
+                for wifi_result in wifi_sample.wifi_results:
+                    wifi_results.append({
+                        "x": location.x,
+                        "y": location.y,
+                        "floor": location.floor,
+                        "filename": wifi_sample.filename,
+                        "sample_id": wifi_sample.sample_id,
+                        "mac_address": wifi_result.mac_address,
+                        "signal_strength": wifi_result.signal_strength
+                    })
         return wifi_results

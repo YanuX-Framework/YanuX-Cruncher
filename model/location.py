@@ -7,10 +7,10 @@ class IndoorLocation(object):
         self.x = int(x)
         self.y = int(y)
         self.floor = int(floor)
-        self.wifi_results = []
+        self.wifi_samples = []
 
     def __str__(self):
         return "X: "+str(self.x)+" Y: "+str(self.y)+" Floor: "+str(self.floor)
 
-    def shuffle_results(self):
-        random.shuffle(self.wifi_results)
+    def shuffle_samples(self):
+        random.shuffle(self.wifi_samples)

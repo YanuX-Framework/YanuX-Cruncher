@@ -11,5 +11,10 @@ wifi_logs = WifiLogs(json_loader.json_data)
 print("# Locations")
 print(len(wifi_logs.locations))
 
+print("# Samples")
+print(len(wifi_logs.wifi_samples()))
+
+print("# Results")
+print(len(wifi_logs.wifi_results()))
 
 print("--- THE END ---")
