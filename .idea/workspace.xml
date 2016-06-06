@@ -2,13 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a6eb36f9-9446-4a00-a674-a0b1f6cf5ad5" name="Default" comment="- Parsing Logs and Testing Stuff on Jupyter/IPython Notebook">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/CruncherNotebook.ipynb" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/wifi_samples.ods" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/wifi_samples.xls" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/wifi_samples.xlsx" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/model/wifi.py" afterPath="$PROJECT_DIR$/model/wifi.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/wifi_samples.csv" afterPath="$PROJECT_DIR$/wifi_samples.csv" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/CruncherMetricsNotebook.ipynb" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/CruncherPlaygroundNotebook.ipynb" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/metrics.csv" afterPath="$PROJECT_DIR$/metrics.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/wifi_results_all.csv" afterPath="$PROJECT_DIR$/wifi_results_all.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/wifi_results_test.csv" afterPath="$PROJECT_DIR$/wifi_results_test.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/wifi_results_train.csv" afterPath="$PROJECT_DIR$/wifi_results_train.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/wifi_samples_all.csv" afterPath="$PROJECT_DIR$/wifi_samples_all.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/wifi_samples_test.csv" afterPath="$PROJECT_DIR$/wifi_samples_test.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/wifi_samples_train.csv" afterPath="$PROJECT_DIR$/wifi_samples_train.csv" />
     </list>
     <ignored path="Cruncher.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -112,8 +114,8 @@
   <component name="ProjectFrameBounds">
     <option name="x" value="-8" />
     <option name="y" value="-8" />
-    <option name="width" value="1696" />
-    <option name="height" value="1026" />
+    <option name="width" value="1616" />
+    <option name="height" value="876" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -849,7 +851,7 @@
       <workItem from="1464088476121" duration="24862000" />
       <workItem from="1464882019761" duration="12712000" />
       <workItem from="1464959612306" duration="3583000" />
-      <workItem from="1465209506549" duration="2473000" />
+      <workItem from="1465209506549" duration="2593000" />
     </task>
     <task id="LOCAL-00001" summary="- Parsing Logs and Testing Stuff on Jupyter/IPython Notebook">
       <created>1463596241145</created>
@@ -862,11 +864,11 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="56476000" />
+    <option name="totallyTimeSpent" value="56596000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1696" height="1026" extended-state="6" />
-    <editor active="true" />
+    <frame x="-8" y="-8" width="1616" height="876" extended-state="6" />
+    <editor active="false" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -875,11 +877,11 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39932126" sideWeight="0.51007557" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2785235" sideWeight="0.48992443" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.33467743" sideWeight="0.48992443" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.16870415" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1773779" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
