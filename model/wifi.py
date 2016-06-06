@@ -98,6 +98,7 @@ class WifiLogs(object):
                     "floor": location.floor,
                     "filename": wifi_sample.filename,
                     "sample_id": wifi_sample.sample_id,
+                    "timestamp": wifi_sample.timestamp
                 }
                 for wifi_result in wifi_sample.wifi_results:
                     sample[wifi_result.mac_address] = wifi_result.signal_strength
@@ -116,6 +117,7 @@ class WifiLogs(object):
                         "filename": wifi_sample.filename,
                         "sample_id": wifi_sample.sample_id,
                         "mac_address": wifi_result.mac_address,
+                        "timestamp": wifi_sample.timestamp,
                         "signal_strength": wifi_result.signal_strength
                     })
         return wifi_results
