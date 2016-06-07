@@ -1,6 +1,17 @@
 import re
 import sys
-from model.location import IndoorLocation
+import random
+
+from yanux.cruncher.model.location import IndoorLocation
+
+
+class WifiIndoorLocation(IndoorLocation):
+    def __init__(self, x, y, floor):
+        super().__init__(x, y, floor)
+        self.wifi_samples = []
+
+    def shuffle_samples(self):
+        random.shuffle(self.wifi_samples)
 
 
 class WifiConnectionInfo(object):
@@ -71,18 +82,12 @@ class WifiLogs(object):
             parsed_coord = re.findall("\d+", name)
             coordinates = (int(parsed_coord[0]), int(parsed_coord[1]), WifiLogs._DEFAULT_FLOOR)
             if coordinates not in self.locations:
-                self.locations[coordinates] = IndoorLocation(coordinates[0]/2, coordinates[1]/2, coordinates[2])
+                self.locations[coordinates] = WifiIndoorLocation(coordinates[0]/2, coordinates[1]/2, coordinates[2])
             location = self.locations[coordinates]
             for session in log_file["sessions"]:
                 timestamp = session["timestamp"]
                 for entry in session["entries"]:
                     location.wifi_samples.append(WifiSample(log_file["name"], entry["id"], timestamp, entry["reading"]))
-
-    def sample_count(self):
-        count = 0
-        for key, location in self.locations.items():
-            count += 1
-        return count
 
     def shuffle_samples(self):
         for key, location in self.locations.items():
