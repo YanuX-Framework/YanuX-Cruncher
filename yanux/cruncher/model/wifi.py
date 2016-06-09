@@ -59,9 +59,9 @@ class WifiSample(object):
         self.sample_id = sample_id
         self.timestamp = timestamp
         self.current_connection_info = WifiConnectionInfo(wifi_reading["connectionInfo"])
-        self.sensor_entries = []
+        self.sensor_entries = {}
         for sensor_entry in wifi_reading["sensorEntries"]:
-            self.sensor_entries.append(SensorEntry(sensor_entry))
+            self.sensor_entries[sensor_entry["sensorTypeName"]] = SensorEntry(sensor_entry)
         self.wifi_results = []
         for wifi_result in wifi_reading["wifiResults"]:
             self.wifi_results.append(WifiResult(wifi_result))
@@ -101,6 +101,7 @@ class WifiLogs(object):
                     "x": location.x,
                     "y": location.y,
                     "floor": location.floor,
+                    "orientation": wifi_sample.sensor_entries["Orientation"].values[0],
                     "filename": wifi_sample.filename,
                     "sample_id": wifi_sample.sample_id,
                     "timestamp": wifi_sample.timestamp
@@ -119,6 +120,7 @@ class WifiLogs(object):
                         "x": location.x,
                         "y": location.y,
                         "floor": location.floor,
+                        "orientation": wifi_sample.sensor_entries["Orientation"].values[0],
                         "filename": wifi_sample.filename,
                         "sample_id": wifi_sample.sample_id,
                         "mac_address": wifi_result.mac_address,
