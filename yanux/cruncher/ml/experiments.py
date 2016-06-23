@@ -58,6 +58,8 @@ def convert_to_units(data, from_units="dBm", to_units="dBm"):
         return data
     elif from_units == "dBm" and to_units == "mW":
         return 10 ** (data / 10)
+    elif from_units == "mW" and to_units == "dBm":
+        return 10 * np.log10(data)
     else:
         raise ValueError("Unsupported units")
 

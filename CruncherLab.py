@@ -63,11 +63,11 @@ def main(argv):
     print("Generating Training and Test Data...")
     data_scenarios = {}
     test_data_scenarios = {}
-    prepare_full_data_scenarios(wifi_samples, data_scenarios,
-                                raw=raw,
-                                groupby_mean=groupby_mean,
-                                groupby_max=groupby_max,
-                                groupby_min=groupby_min)
+    # prepare_full_data_scenarios(wifi_samples, data_scenarios,
+    #                             raw=raw,
+    #                             groupby_mean=groupby_mean,
+    #                             groupby_max=groupby_max,
+    #                             groupby_min=groupby_min)
     prepare_full_data_scenarios(wifi_samples, test_data_scenarios,
                                 raw=raw,
                                 groupby_mean=groupby_mean,
@@ -89,33 +89,33 @@ def main(argv):
                                    groupby_min=groupby_min,
                                    partials=test_data_partials)
 
-    for filename_prefix in filename_prefixes:
-        prepare_filename_startswith_data_scenarios(wifi_samples, data_scenarios,
-                                                   raw=raw,
-                                                   groupby_mean=groupby_mean,
-                                                   groupby_max=groupby_max,
-                                                   groupby_min=groupby_min,
-                                                   filename_startswith=filename_prefix)
-    for filename_prefix in filename_prefixes:
-        prepare_filename_startswith_data_scenarios(wifi_samples, test_data_scenarios,
-                                                   raw=raw,
-                                                   groupby_mean=groupby_mean,
-                                                   groupby_max=groupby_max,
-                                                   groupby_min=groupby_min,
-                                                   filename_startswith=filename_prefix)
+    #for filename_prefix in filename_prefixes:
+    #    prepare_filename_startswith_data_scenarios(wifi_samples, data_scenarios,
+    #                                                raw=raw,
+    #                                                groupby_mean=groupby_mean,
+    #                                                groupby_max=groupby_max,
+    #                                                groupby_min=groupby_min,
+    #                                                filename_startswith=filename_prefix)
+    # for filename_prefix in filename_prefixes:
+    #     prepare_filename_startswith_data_scenarios(wifi_samples, test_data_scenarios,
+    #                                                raw=raw,
+    #                                                groupby_mean=groupby_mean,
+    #                                                groupby_max=groupby_max,
+    #                                                groupby_min=groupby_min,
+    #                                                filename_startswith=filename_prefix)
 
-    for subset_locations in subset_locations_values:
-        prepare_full_data_scenarios(subset_wifi_samples_locations(wifi_samples, subset_locations), data_scenarios,
-                                    raw=raw,
-                                    groupby_mean=groupby_mean,
-                                    groupby_max=groupby_max,
-                                    groupby_min=groupby_min,
-                                    scenarios_suffix="subset_locations=" + str(subset_locations))
+    #for subset_locations in subset_locations_values:
+    #    prepare_full_data_scenarios(subset_wifi_samples_locations(wifi_samples, subset_locations), data_scenarios,
+    #                                raw=raw,
+    #                                groupby_mean=groupby_mean,
+    #                                groupby_max=groupby_max,
+    #                                groupby_min=groupby_min,
+    #                                scenarios_suffix="subset_locations=" + str(subset_locations))
 
-    path_direction_aggregated_data_scenarios(wifi_samples, data_scenarios,
-                                             groupby_mean=groupby_mean,
-                                             groupby_max=groupby_max,
-                                             groupby_min=groupby_min)
+    # path_direction_aggregated_data_scenarios(wifi_samples, data_scenarios,
+    #                                          groupby_mean=groupby_mean,
+    #                                          groupby_max=groupby_max,
+    #                                          groupby_min=groupby_min)
 
     save_scenarios(data_scenarios, output_directory=output_data_directory, prefix="train_")
     print("# Data Scenarios: " + str(len(data_scenarios)))
@@ -178,6 +178,9 @@ def main(argv):
                                                                                      to_units=units)
                                     if scaler is not None:
                                         scaler.fit(curr_data[mac_addresses])
+                                        curr_data[mac_addresses] = pd.DataFrame(
+                                            scaler.transform(curr_data[mac_addresses]),
+                                            columns=mac_addresses)
                                         curr_test_data[mac_addresses] = pd.DataFrame(
                                             scaler.transform(curr_test_data[mac_addresses]),
                                             columns=mac_addresses)
