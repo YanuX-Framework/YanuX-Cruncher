@@ -112,10 +112,10 @@ def main(argv):
     #                                groupby_min=groupby_min,
     #                                scenarios_suffix="subset_locations=" + str(subset_locations))
 
-    # path_direction_aggregated_data_scenarios(wifi_samples, data_scenarios,
-    #                                          groupby_mean=groupby_mean,
-    #                                          groupby_max=groupby_max,
-    #                                          groupby_min=groupby_min)
+    # prepare_path_direction_aggregated_data_scenarios(wifi_samples, data_scenarios,
+    #                                                  groupby_mean=groupby_mean,
+    #                                                  groupby_max=groupby_max,
+    #                                                  groupby_min=groupby_min)
 
     save_scenarios(data_scenarios, output_directory=output_data_directory, prefix="train_")
     print("# Data Scenarios: " + str(len(data_scenarios)))
