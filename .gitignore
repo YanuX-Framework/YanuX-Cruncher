@@ -63,3 +63,7 @@ target/
 
 # Output Directory
 out/
+
+*.wav
+
+*.csv
