@@ -79,10 +79,10 @@ class WifiLogs(object):
         for name, log_file in self._json_data.items():
             # Find a better way to get the coordinates so that I don't have to follow a specific filename format.
             # Besides that I really shouldn't hardcode the default floor into the code
-            parsed_coord = re.findall("\d+", name)
-            coordinates = (int(parsed_coord[0]), int(parsed_coord[1]), WifiLogs._DEFAULT_FLOOR)
+            parsed_coord = re.findall(r"[-+]?\d*\.\d+|\d+", log_file["name"])
+            coordinates = (float(parsed_coord[0]), float(parsed_coord[1]), WifiLogs._DEFAULT_FLOOR)
             if coordinates not in self.locations:
-                self.locations[coordinates] = WifiIndoorLocation(coordinates[0]/2, coordinates[1]/2, coordinates[2])
+                self.locations[coordinates] = WifiIndoorLocation(coordinates[0], coordinates[1], coordinates[2])
             location = self.locations[coordinates]
             for session in log_file["sessions"]:
                 timestamp = session["timestamp"]
