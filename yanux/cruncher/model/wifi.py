@@ -6,13 +6,12 @@ from yanux.cruncher.model.location import IndoorLocation
 
 
 class WifiIndoorLocation(IndoorLocation):
-    def __init__(self, x, y, floor):
-        super().__init__(x, y, floor)
+    def __init__(self, place, floor, x, y):
+        super().__init__(place, floor, x, y)
         self.wifi_samples = []
 
     def shuffle_samples(self):
         random.shuffle(self.wifi_samples)
-
 
 class WifiConnectionInfo(object):
     def __init__(self, connection_info):
@@ -68,6 +67,7 @@ class WifiSample(object):
 
 
 class WifiLogs(object):
+    _DEFAULT_PLACE = "ed2.fct.unl.pt"
     _DEFAULT_FLOOR = 2
 
     def __init__(self, json_data):
@@ -80,9 +80,15 @@ class WifiLogs(object):
             # Find a better way to get the coordinates so that I don't have to follow a specific filename format.
             # Besides that I really shouldn't hardcode the default floor into the code
             parsed_coord = re.findall(r"[-+]?\d*\.\d+|\d+", log_file["name"])
-            coordinates = (float(parsed_coord[0]), float(parsed_coord[1]), WifiLogs._DEFAULT_FLOOR)
+            coordinates = (WifiLogs._DEFAULT_PLACE,
+                           WifiLogs._DEFAULT_FLOOR,
+                           float(parsed_coord[0]),
+                           float(parsed_coord[1]))
             if coordinates not in self.locations:
-                self.locations[coordinates] = WifiIndoorLocation(coordinates[0], coordinates[1], coordinates[2])
+                self.locations[coordinates] = WifiIndoorLocation(coordinates[0],
+                                                                 coordinates[1],
+                                                                 coordinates[2],
+                                                                 coordinates[3])
             location = self.locations[coordinates]
             for session in log_file["sessions"]:
                 timestamp = session["timestamp"]
@@ -98,9 +104,10 @@ class WifiLogs(object):
         for coordinates, location in self.locations.items():
             for wifi_sample in location.wifi_samples[start_slice_index:end_slice_index]:
                 sample = {
+                    "place": location.place,
+                    "floor": location.floor,
                     "x": location.x,
                     "y": location.y,
-                    "floor": location.floor,
                     "orientation": wifi_sample.sensor_entries["Orientation"].values[0],
                     "filename": wifi_sample.filename,
                     "sample_id": wifi_sample.sample_id,
@@ -117,9 +124,10 @@ class WifiLogs(object):
             for wifi_sample in location.wifi_samples[start_slice_index:end_slice_index]:
                 for wifi_result in wifi_sample.wifi_results:
                     wifi_results.append({
+                        "place": location.place,
+                        "floor": location.floor,
                         "x": location.x,
                         "y": location.y,
-                        "floor": location.floor,
                         "orientation": wifi_sample.sensor_entries["Orientation"].values[0],
                         "filename": wifi_sample.filename,
                         "sample_id": wifi_sample.sample_id,

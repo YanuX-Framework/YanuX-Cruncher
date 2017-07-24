@@ -71,7 +71,9 @@ def subset_wifi_samples_locations(wifi_samples, kept_locations_ratio=1.0, aggreg
     ids = []
     for key in sampled_locations_coords_keys:
         ids.extend(locations_coords[key])
-    return wifi_samples.ix[ids].reset_index(drop=True)
+        
+    return [wifi_samples.ix[ids].reset_index(drop=True),
+            wifi_samples.ix[set(wifi_samples.index)-set(ids)].reset_index(drop=True)]
 
 
 def prepare_full_data_scenarios(wifi_samples, data_scenarios, aggregation_coords=["x", "y", "floor"],
@@ -163,89 +165,7 @@ def prepare_filename_startswith_data_scenarios(wifi_samples, data_scenarios,
                     "filename_startswith_groupby_min_data" + scenario_parameters] = filename_startswith_groupby_min_data
     return data_scenarios
 
-# TODO: This is just a crude implementation which uses the log files' name as a way to determine the path direction. It must be improved upon in the future for "online" use.
-def prepare_path_direction_aggregated_data_scenarios(wifi_samples, data_scenarios, aggregation_coords=["x", "y", "floor"],
-                                                     groupby_mean=False, groupby_max=True, groupby_min=False,
-                                                     scenarios_suffix=""):
-    if groupby_mean or groupby_max or groupby_min:
-        path_direction_aggregated_data = wifi_samples.groupby(["x", "y", "floor", "filename" + scenarios_suffix],
-                                                              as_index=False).mean()
-        if groupby_mean:
-            path_direction_aggregated_mean_data = path_direction_aggregated_data.groupby(aggregation_coords,
-                                                                                         as_index=False).mean()
-            data_scenarios[
-                "path_direction_aggregated_mean_data" + scenarios_suffix] = path_direction_aggregated_mean_data
-        if groupby_max:
-            path_direction_aggregated_max_data = path_direction_aggregated_data.groupby(aggregation_coords,
-                                                                                        as_index=False).max()
-            data_scenarios["path_direction_aggregated_max_data" + scenarios_suffix] = path_direction_aggregated_max_data
-        if groupby_min:
-            path_direction_aggregated_min_data = path_direction_aggregated_data.groupby(aggregation_coords,
-                                                                                        as_index=False).min()
-            data_scenarios["path_direction_aggregated_min_data" + scenarios_suffix] = path_direction_aggregated_min_data
-    return data_scenarios
-
-
 def save_scenarios(data_scenarios, output_directory="out", prefix=""):
     for data_scenario_name, data_scenario in data_scenarios.items():
         data_scenario["scenario_name"] = prefix + data_scenario_name
         data_scenario.to_csv(output_directory + "/" + prefix + data_scenario_name + ".csv")
-
-# TODO: Remove if I end up never using it again!
-def _prepare_shuffled_partial_data_scenarios_aux(wifi_samples, shuffled_indices, data_scenarios, aggregation_coords,
-                                                 run, slice_at_the_end, partials,
-                                                 raw, groupby_mean, groupby_max, groupby_min, scenarios_suffix):
-    if raw or groupby_mean or groupby_max or groupby_min:
-        if scenarios_suffix:
-            scenarios_suffix = "_" + scenarios_suffix
-        else:
-            scenarios_suffix = ""
-        for frac in partials:
-            scenario_parameters = "_fraction=" + str(frac) + ",_run=" + str(run) + scenarios_suffix
-            data_ids = []
-            for key, indices in shuffled_indices.items():
-                data_slice_index = int(len(shuffled_indices) * frac)
-                if slice_at_the_end is not True:
-                    data_ids.extend(indices[:data_slice_index])
-                else:
-                    data_ids.extend(indices[data_slice_index:])
-            partial_data = wifi_samples.ix[data_ids].reset_index(drop=True)
-            if raw:
-                data_scenarios["shuffled_partial_data" + scenario_parameters] = partial_data
-            if groupby_mean or groupby_max or groupby_min:
-                partial_groupby_data = partial_data.groupby(aggregation_coords, as_index=False)
-                if groupby_mean:
-                    partial_groupby_mean_data = partial_groupby_data.mean()
-                    data_scenarios[
-                        "shuffled_partial_groupby_mean_data" + scenario_parameters] = partial_groupby_mean_data
-                if groupby_max:
-                    partial_groupby_max_data = partial_groupby_data.max()
-                    data_scenarios["shuffled_partial_groupby_max_data" + scenario_parameters] = partial_groupby_max_data
-                if groupby_min:
-                    partial_groupby_min_data = partial_groupby_data.min()
-                    data_scenarios["shuffled_partial_groupby_min_data" + scenario_parameters] = partial_groupby_min_data
-    return data_scenarios
-
-
-def prepare_shuffled_partial_data_scenarios(wifi_samples, data_scenarios, test_data_scenarios,
-                                            aggregation_coords=["x", "y", "floor"],
-                                            shuffled_runs=3, partials=[0.5], test_partials=[0.5],
-                                            raw=True, groupby_mean=False, groupby_max=False, groupby_min=False,
-                                            scenarios_suffix=""):
-    if raw or groupby_mean or groupby_max or groupby_min:
-        locations_coords = wifi_samples.groupby(aggregation_coords).indices.items()
-        for run in range(0, shuffled_runs):
-            shuffled_indices = {}
-            for key, indices in locations_coords:
-                shuffled_indices[key] = indices.copy()
-                random.shuffle(shuffled_indices[key])
-            _prepare_shuffled_partial_data_scenarios_aux(wifi_samples, shuffled_indices, data_scenarios,
-                                                         aggregation_coords,
-                                                         run, False, partials,
-                                                         raw, groupby_mean, groupby_max, groupby_min,
-                                                         scenarios_suffix)
-            _prepare_shuffled_partial_data_scenarios_aux(wifi_samples, shuffled_indices, test_data_scenarios,
-                                                         aggregation_coords,
-                                                         run, True, partials,
-                                                         raw, groupby_mean, groupby_max, groupby_min,
-                                                          scenarios_suffix)

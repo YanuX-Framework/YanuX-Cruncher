@@ -1,10 +1,10 @@
 class IndoorLocation(object):
-    def __init__(self, x, y, floor):
-        # Local Coordinates (e.g., using a reference grid over a building's floor plan)
-        self.x = x
-        self.y = y
+    def __init__(self, place, floor, x, y):
+        self.place = str(place)
         self.floor = int(floor)
-        self.wifi_samples = []
+        # Local Coordinates (e.g., using a reference grid over a building's floor plan)
+        self.x = float(x)
+        self.y = float(y)
 
     def __str__(self):
-        return "X: "+str(self.x)+" Y: "+str(self.y)+" Floor: "+str(self.floor)
+        return "Building: "+ building + " Floor: "+str(self.floor) + " X: " + str(self.x) + " Y: "+str(self.y)
