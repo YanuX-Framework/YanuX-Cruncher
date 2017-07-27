@@ -5,6 +5,8 @@ import numpy as np
 import pandas as pd
 import sklearn.metrics
 from sklearn.neighbors import KNeighborsRegressor
+from sklearn.model_selection import cross_val_predict
+from sklearn.pipeline import make_pipeline
 
 
 def experiment_metrics(result):
@@ -23,8 +25,65 @@ def experiment_metrics(result):
     return metrics
 
 
+def knn_experiment_cv(data, cross_validation, train_cols, coord_cols,    
+                      scaler=None, n_neighbors=5, weights='uniform',
+                      algorithm='auto', leaf_size=30, p=2, metric='minkowski',
+                      metric_params=None, n_jobs=1):    
+    result = None
+    knn = KNeighborsRegressor(n_neighbors=n_neighbors, weights=weights, algorithm=algorithm,
+                              leaf_size=leaf_size, p=p, metric=metric,
+                              metric_params=metric_params, n_jobs=n_jobs)
+    if scaler is not None:
+        estimator = make_pipeline(scaler, knn)
+    else:
+        estimator = knn
+        
+    X = data[train_cols]
+    y = data[coord_cols]
+    
+    predictions = pd.DataFrame(cross_val_predict(estimator, X, y, cv=cross_validation), columns=coord_cols)
+    result = y.join(predictions, rsuffix="_predicted")
+    
+    error = pd.DataFrame((predictions[coord_cols] - result[coord_cols]).apply(np.linalg.norm, axis=1), columns=["error"])
+    result = pd.concat([result, error], axis=1)
+    
+    return result
+
+
+def knn_experiment_test_data(data, test_data, train_cols, coord_cols,
+                            scaler=None, n_neighbors=5, weights='uniform', algorithm='auto',
+                            leaf_size=30, p=2, metric='minkowski',
+                            metric_params=None, n_jobs=1):
+    result = None
+    knn = KNeighborsRegressor(n_neighbors=n_neighbors, weights=weights, algorithm=algorithm,
+                              leaf_size=leaf_size, p=p, metric=metric,
+                              metric_params=metric_params, n_jobs=n_jobs)
+    if scaler is not None:
+        estimator = make_pipeline(scaler, knn)
+    else:
+        estimator = knn
+    
+    locations = data.groupby(coord_cols).indices.keys()
+    for coords in locations:
+        train_data = data[(data[coord_cols[0]] != coords[0]) |
+                          (data[coord_cols[1]] != coords[1])].reset_index(drop=True)
+        
+        target_values = test_data[(test_data[coord_cols[0]] == coords[0]) &
+                                  (test_data[coord_cols[1]] == coords[1])].reset_index(drop=True)
+        
+        estimator.fit(train_data[train_cols], train_data[coord_cols])
+        predictions = pd.DataFrame(estimator.predict(target_values[train_cols]), columns=coord_cols)
+        curr_result = target_values[coord_cols].join(predictions, rsuffix="_predicted")
+        error = pd.DataFrame((predictions[["x", "y"]] - curr_result[["x", "y"]]).apply(np.linalg.norm, axis=1),
+                             columns=["error"])
+        curr_result = pd.concat([curr_result, error], axis=1)
+        result = pd.concat([result, curr_result])
+
+    return result
+
+
 def knn_experiment(data, train_cols, coord_cols,
-                   n_neighbors=5, weights='uniform', algorithm='auto',
+                   scaler=None, n_neighbors=5, weights='uniform', algorithm='auto',
                    leaf_size=30, p=2, metric='minkowski',
                    metric_params=None, n_jobs=1,
                    test_data=None):
@@ -32,6 +91,11 @@ def knn_experiment(data, train_cols, coord_cols,
     knn = KNeighborsRegressor(n_neighbors=n_neighbors, weights=weights, algorithm=algorithm,
                               leaf_size=leaf_size, p=p, metric=metric,
                               metric_params=metric_params, n_jobs=n_jobs)
+    if scaler is not None:
+        estimator = make_pipeline(scaler, knn)
+    else:
+        estimator = knn
+    
     locations = data.groupby(coord_cols).indices.keys()
     for coords in locations:
         train_data = data[(data[coord_cols[0]] != coords[0]) |
@@ -42,8 +106,8 @@ def knn_experiment(data, train_cols, coord_cols,
         else:
             target_values = data[(data[coord_cols[0]] == coords[0]) &
                                  (data[coord_cols[1]] == coords[1])].reset_index(drop=True)
-        knn.fit(train_data[train_cols], train_data[coord_cols])
-        predictions = pd.DataFrame(knn.predict(target_values[train_cols]), columns=coord_cols)
+        estimator.fit(train_data[train_cols], train_data[coord_cols])
+        predictions = pd.DataFrame(estimator.predict(target_values[train_cols]), columns=coord_cols)
         curr_result = target_values[coord_cols].join(predictions, rsuffix="_predicted")
         error = pd.DataFrame((predictions[["x", "y"]] - curr_result[["x", "y"]]).apply(np.linalg.norm, axis=1),
                              columns=["error"])
@@ -64,7 +128,7 @@ def convert_to_units(data, from_units="dBm", to_units="dBm"):
         raise ValueError("Unsupported units")
 
 
-def subset_wifi_samples_locations(wifi_samples, kept_locations_ratio=1.0, aggregation_coords=["x", "y", "floor"], ):
+def subset_wifi_samples_locations(wifi_samples, kept_locations_ratio=1.0, aggregation_coords=["x", "y"], ):
     locations_coords = wifi_samples.groupby(aggregation_coords).indices
     sampled_locations_coords_keys = random.sample(list(locations_coords),
                                                   int(len(locations_coords) * kept_locations_ratio))
@@ -76,7 +140,7 @@ def subset_wifi_samples_locations(wifi_samples, kept_locations_ratio=1.0, aggreg
             wifi_samples.ix[set(wifi_samples.index)-set(ids)].reset_index(drop=True)]
 
 
-def prepare_full_data_scenarios(wifi_samples, data_scenarios, aggregation_coords=["x", "y", "floor"],
+def prepare_full_data_scenarios(wifi_samples, data_scenarios, aggregation_coords=["x", "y"],
                                 raw=True, groupby_mean=False, groupby_min=False, groupby_max=False,
                                 scenarios_suffix=None):
     if raw or groupby_mean or groupby_max or groupby_min:
@@ -98,7 +162,7 @@ def prepare_full_data_scenarios(wifi_samples, data_scenarios, aggregation_coords
     return data_scenarios
 
 
-def prepare_partial_data_scenarios(wifi_samples, data_scenarios, aggregation_coords=["x", "y", "floor"],
+def prepare_partial_data_scenarios(wifi_samples, data_scenarios, aggregation_coords=["x", "y"],
                                    slice_at_the_end=False, partials=[0.5],
                                    raw=True, groupby_mean=False, groupby_min=False, groupby_max=False,
                                    scenarios_suffix=""):
@@ -136,7 +200,7 @@ def prepare_partial_data_scenarios(wifi_samples, data_scenarios, aggregation_coo
 
 
 def prepare_filename_startswith_data_scenarios(wifi_samples, data_scenarios,
-                                               filename_startswith="", aggregation_coords=["x", "y", "floor"],
+                                               filename_startswith="", aggregation_coords=["x", "y"],
                                                raw=True, groupby_mean=False, groupby_min=False, groupby_max=False,
                                                scenarios_suffix=""):
     if raw or groupby_mean or groupby_mean or groupby_max or groupby_min:
