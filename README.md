@@ -1,2 +1,11 @@
-# YanuX-Cruncher
-A project exploring multiple data analysis solutions to assess their applicability to the YanuX Framework
+# YanuX Cruncher
+This repository hosts a series of [__Jupyter Notebooks__](https://jupyter.org/) that were used to explore multiple data analysis and machine learning solutions to assess their applicability to the [__YanuX Framework__](https://yanux-framework.github.io/).
+
+It also hosts [notebooks](https://jupyter.org/) analyzing the data pertaining to some of the user studies that were conducted with the application prototypes that were built using the [__YanuX Framework__](https://yanux-framework.github.io/).
+
+## Documentation
+### TODO:
+- Provide additional documentation.
+
+## License
+This work is licensed under [__GNU General Public License Version 3__](LICENSE)
